@@ -246,8 +246,8 @@ abstract class Annotation {
 	 * @return unknown_type
 	 */
 	static function parse($docstring) {
-		preg_match_all('%(?:\s|\*)*!(\S+)[^\n\r\S]*(?:(.*?)(?:\*/)|(.*))%', $docstring, $result, PREG_PATTERN_ORDER);
-		
+		preg_match_all('%(?:\s|\*)*!(\S+)[^\n\r\S]*(?:(.*?)(?:\*/)|(.*))%', $docstring, $result);
+
 		$annotations = $result[1];
 		if(isset($result[2][0]) && $result[2][0] != '') {
 			$values = $result[2];
@@ -257,36 +257,43 @@ abstract class Annotation {
 		$returns = array();
 		if(empty($result[1])) return array();
 		foreach($annotations as $key => $annotation) {
+			$value = $values[$key];
+			// Quoted strings
+			preg_match_all('/([\'"])(.*?)(?<!\\\\)\\1/', $value, $result);
+			$value = str_replace($result[0], '%s', $value);
+			$quoted_strings = array();
+			foreach($result[2] as $n => $content) {
+				if($result[1][$n] == '"') {
+					// Double quote must be converted to single quote
+					$content = str_replace(array('\"', "'"),
+						array('"',  "\'"), $content);
+				}
+				$quoted_strings[] = $content;
+			}
 			// Strip Whitespace
-			$value = preg_replace('/\s*(\(|:|,|\))[^\n\r\S]*/', '${1}', '(' . $values[$key] . ')');
-			// Extract Strings
-			preg_match_all('/\'(.*?)(?<!\\\\)\'|"(.*?)(?<!\\\\)"/', $value, $result, PREG_PATTERN_ORDER);
-			$quoted_strings = $result[2];
-			$value = preg_replace('/\'.*?(?<!\\\\)\'|".*?(?<!\\\\)"/', '%s', $value);
+			$value = preg_replace('/\s*(\(|:|,|\))[^\n\r\S]*/', '${1}', '(' . $value . ')');
 			// Insert Single Quotes
 			$value = preg_replace('/((?!\(|,|:))(?!\))(.*?)((?=\)|,|:))/', '${1}\'${2}\'${3}', $value);
 			// Array Keyword
-			$value = str_replace('(','array(',$value);
+			$value = str_replace('(','array(', $value);
 			// Arrows
 			$value = str_replace(':', '=>', $value);
-			
+
 			$value = vsprintf($value . ';', $quoted_strings);
-			
 			@eval('$array = ' . $value);
 			if(!isset($array)) { 
 				throw new InvalidAnnotationValueException('There is an unparseable annotation value: "!' . $annotation . ': ' . $values[$key] . '"',0,0,'',0,array());
 			}
-			
 			$annotationClass = $annotation . 'Annotation';
 			$fullyQualified = Library::getFullyQualifiedClassName($annotationClass);
-			
+
 			if($annotationClass != $fullyQualified || class_exists($annotationClass,false)) {
 				$annotation = new $annotationClass;
 				$annotation->init($array);
 			} else {
 				throw new UnknownAnnotationException('Unknown annotation: "' . $annotation . '"',0,0,'',0,get_defined_vars());
 			}
-			
+
 			$returns[] = $annotation;
 		}
 		unset($annotations,$values,$result);
