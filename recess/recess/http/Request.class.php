@@ -12,8 +12,8 @@ Library::import('recess.http.Accepts');
 class Request {	
 	
 	public $accepts;
-	
 	public $format;
+	public $contentType;
 	public $headers;
 	public $resource;
 	public $resourceParts = array();

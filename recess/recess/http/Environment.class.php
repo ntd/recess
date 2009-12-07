@@ -38,17 +38,13 @@ class Environment {
 				$request->put = self::getPutParameters($request->input);
 			}
 		}
-		
+
 		$request->headers = self::getHttpRequestHeaders();
-		
 		$request->accepts = new Accepts($request->headers);
-		
+		$request->contentType = @$_SERVER['CONTENT_TYPE'];
 		$request->username = @$_SERVER['PHP_AUTH_USER'];
-		
 		$request->password = @$_SERVER['PHP_AUTH_PW'];
-		
 		$request->cookies = $_COOKIE;
-		
 		$request->isAjax =  isset($request->headers['X_REQUESTED_WITH']) 
 							&& $request->headers['X_REQUESTED_WITH'] == 'XMLHttpRequest';
 

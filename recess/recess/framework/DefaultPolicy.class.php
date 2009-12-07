@@ -113,34 +113,50 @@ class DefaultPolicy implements IPolicy {
 	protected function forceFormatFromResourceString(Request &$request) {
 		$lastPartIndex = count($request->resourceParts) - 1;
 		if($lastPartIndex < 0) return $request;
-		
+
 		$lastPart = $request->resourceParts[$lastPartIndex];
-		
+		$mimeFormat = NULL;
+
 		$lastDotPosition = strrpos($lastPart, Library::dotSeparator);
 		if($lastDotPosition !== false) {
 			$format = substr($lastPart, $lastDotPosition + 1);
 			if($format !== '') {
-				$mime = MimeTypes::preferredMimeTypeFor($format);
-				if($mime !== false) {
+				$mimeFormat = MimeTypes::preferredMimeTypeFor($format);
+				if($mimeFormat !== false) {
 					$request->accepts->forceFormat($format);
 					$request->setResource(substr($request->resource, 0, strrpos($request->resource, Library::dotSeparator)));
+					$request->format = $format;
 				}
 			}
 		}
-		
+
+		// If not explicitely specified, the content type will fallback
+		// to the mime type of the response
+		if (!isset($request->contentType) && isset($mimeFormat))
+			$request->contentType = $mimeFormat;
+
+		// Parse the input data for custom contentType value
+		if (isset($request->contentType))
+			$this->reparameterizeForContentType($request);
+
 		return $request;
 	}
 
-	// @Todo: Worry about the "input" problem. This isn't based on the format
-	//			but rather it is based on the content-type of the entity.
-	protected function reparameterizeForFormat(Request &$request) {
-		if($request->format == Formats::JSON) {
-			$method = strtolower($request->method);
-			$request->$method = json_decode($request->input, true);
-		} else if ($request->format == Formats::XML) {
-			// TODO: XML reparameterization in request transformer
+	protected function reparameterizeForContentType(Request &$request) {
+		$contentFormats = MimeTypes::formatsFor($request->contentType);
+		if (!is_array($contentFormats))
+			return;
+
+		switch($contentFormats[0]) {
+			case 'json':
+				$method = strtolower($request->method);
+				$request->$method = json_decode($request->input, true);
+				break;
+			case 'xml':
+				// TODO: XML reparameterization in request transformer
+				break;
+			default:
 		}
-		return $request;
 	}
 	
 	protected function getControllerFromRouteResult(Request &$request, RoutingResult $routeResult) {
