@@ -51,14 +51,16 @@ class DateTimeInput extends FormInput {
 			$hour = $this->getValueOrZero($value, self::HOUR);
 			$minute = $this->getValueOrZero($value, self::MINUTE);
 			$meridiem = $this->getValueOrZero($value, self::MERIDIEM);
-			
+
 			if($meridiem == self::PM) {
 				$hour += self::PM_HOURS;
 			}
-			
+
 			$this->value = mktime($hour,$minute,1,$month,$day,$year);
-		} else {
+		} elseif(is_numeric($value)) {
 			$this->value = $value;
+		} else {
+			$this->value = strtotime((string) $value);
 		}
 	}
 	
