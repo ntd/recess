@@ -25,15 +25,16 @@ class CodeGenDocComment {
 			// Multi-line doccomment
 			if(!empty($this->lines)) {
 				$code .= '/**';
-				
 				$code .= CodeGen::NL;;
-				
+
 				foreach($this->lines as $line) {
-					$code .= ' * ' . $line;
+					$code .= $blockIndent;
+				    $code .= ' * ' . $line;
 					$code .= CodeGen::NL;
 				}
-						
-				$code .= ' */' . CodeGen::NL;
+
+				$code .= $blockIndent . ' */';
+				$code .= CodeGen::NL;
 			}
 		} else {
 			// Single-line doccomment
