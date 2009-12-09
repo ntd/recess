@@ -14,6 +14,7 @@ Library::import('recess.database.orm.annotations.BelongsToAnnotation', true);
 Library::import('recess.database.orm.annotations.DatabaseAnnotation', true);
 Library::import('recess.database.orm.annotations.TableAnnotation', true);
 Library::import('recess.database.orm.annotations.ColumnAnnotation', true);
+Library::import('recess.database.orm.annotations.DefaultValueAnnotation', true);
 
 Library::import('recess.database.orm.relationships.Relationship');
 Library::import('recess.database.orm.relationships.HasManyRelationship');
@@ -164,7 +165,8 @@ abstract class Model extends Object implements ISqlConditions {
 	
 	protected static function finalClassDescriptor($class, $descriptor) {
 		$modelSource = Databases::getSource($descriptor->getSourceName());
-		$modelSource->cascadeTableDescriptor($descriptor->getTable(), $modelSource->modelToTableDescriptor($descriptor));	
+		if(is_object($modelSource))
+			$modelSource->cascadeTableDescriptor($descriptor->getTable(), $modelSource->modelToTableDescriptor($descriptor));
 		return $descriptor;
 	}
 	
@@ -588,6 +590,7 @@ class ModelDescriptor extends ClassDescriptor {
 class ModelProperty {
 	public $name;
 	public $type;
+	public $defaultValue;
 	public $pkCallback;
 	public $isAutoIncrement = false;
 	public $isPrimaryKey = false;
@@ -598,6 +601,7 @@ class ModelProperty {
 		$prop = new ModelProperty();
 		$prop->name = $array['name'];
 		$prop->type = $array['type'];
+		$prop->defaultValue = $array['defaultValue'];
 		$prop->pkCallback = $array['pkCallback'];
 		$prop->isAutoIncrement = $array['autoincrement'];
 		$prop->isPrimaryKey = $array['isPrimaryKey'];

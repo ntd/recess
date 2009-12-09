@@ -177,7 +177,7 @@
 			$("#tableName").focus();
 		}
 		
-		function addProperty(name, type, isPrimaryKey, options) {
+		function addProperty(name, type, isPrimaryKey, defaultValue, options) {
 			addField();
 			propertiesForm = $("#propertiesForm tr:last");
 			propertiesForm.find(".fieldName").val(name);
@@ -189,6 +189,7 @@
 					propertiesForm.find(".type").val("Integer Autoincrement");
 				}
 			}
+			propertiesForm.find(".defaultValue").val(defaultValue);
 			$("#propertiesForm").parent().find("button").focus();
 		}
 		
@@ -202,6 +203,7 @@
 							addProperty(data.columns[i].name,
 										data.columns[i].type,
 										data.columns[i].isPrimaryKey,
+                                        data.columns[i].defaultValue,
 										data.columns[i].options);
 						}
 					}

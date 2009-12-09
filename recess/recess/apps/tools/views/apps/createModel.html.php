@@ -88,8 +88,9 @@ Buffer::end();
 		<thead>
 			<tr>
 				<td>PK</td>
-				<td>Property Name</td>
+				<td>Property name</td>
 				<td>Type</td>
+				<td>Default value</td>
 				<td>Remove</td>
 			</tr>
 		</thead>
@@ -116,6 +117,7 @@ Buffer::end();
 					<option value="<?php echo RecessType::TIME; ?>">Time</option>
 					<option value="<?php echo RecessType::BLOB; ?>">Blob</option>
 			</select></td>
+			<td><input type="text" name="defaultValues[]" class="defaultValue" /></td>
 			<td><input class="removeField" type="button" value="X"></input></td>
 		</tr>
 		</tbody>

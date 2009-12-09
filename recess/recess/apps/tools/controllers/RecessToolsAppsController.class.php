@@ -233,6 +233,7 @@ class RecessToolsAppsController extends Controller {
 		$propertyNames = $values['fields'];
 		$primaryKey = $values['primaryKey'];
 		$types = $values['types'];
+        $defaultValues = $values['defaultValues'];
 		
 		Library::import('recess.database.orm.Model', true); 
 		// Forcing b/c ModelDescriptor is in Model
@@ -259,6 +260,7 @@ class RecessToolsAppsController extends Controller {
 			} else {
 				$property->type = $types[$i];
 			}
+            $property->defaultValue = @$defaultValues[$i];
 			$modelDescriptor->properties[] = $property;
 		}
 		

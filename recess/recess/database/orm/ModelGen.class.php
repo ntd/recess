@@ -25,10 +25,14 @@ class ModelGen {
 				$columnDocComment .= ', AutoIncrement';
 			}
 			$propertyDocComment = new CodeGenDocComment($columnDocComment);
+			if(!empty($prop->defaultValue)) {
+				$defaultValue = addcslashes($prop->defaultValue, "\\'");
+				$propertyDocComment->addLine("!DefaultValue '$defaultValue'");
+			}
 			$property->setDocComment($propertyDocComment);
 			$class->addProperty($property);
 		}
-		
+
 		return $classFile->toCode();
 	}
 }

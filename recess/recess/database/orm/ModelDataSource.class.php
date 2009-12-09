@@ -31,7 +31,7 @@ class ModelDataSource extends PdoDataSource {
 								$property->type,
 								true,
 								$property->isPrimaryKey,
-								array(),
+								$property->defaultValue,
 								($property->isAutoIncrement ? array('autoincrement' => true) : array())
 							);
 		}
