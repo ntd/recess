@@ -23,8 +23,7 @@ class DefaultValueAnnotation extends Annotation {
 
 	protected function validate($class) {
 		$this->acceptsNoKeyedValues();
-		$this->minimumParameterCount(1);
-		$this->maximumParameterCount(1);
+		$this->exactParameterCount(1);
 	}
 	
 	protected function expand($class, $reflection, $descriptor) {
