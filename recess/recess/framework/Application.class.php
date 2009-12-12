@@ -74,9 +74,19 @@ abstract class Application {
 	
 	function init() {
 		$this->addViewPath($_ENV['dir.recess'] . 'recess/framework/ui/parts/');
+
 		foreach($this->plugins as $plugin) {
+			if(is_object($plugin))
+				continue;
+
+			if(!Library::classExists($plugin))
+				die('Plugin "' . $plugin . '" does not exist: remove it from "RecessConf::$plugins" (usually set in recess-conf.php) or from the "' . $this->name . '::$plugins" property.');
+
+			$pluginName = Library::getClassName($plugin);
+			$plugin = new $pluginName;
 			$plugin->init($this);
 		}
+
 		$this->addViewPath($this->viewsDir);
 	}
 	
