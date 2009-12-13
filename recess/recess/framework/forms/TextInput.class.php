@@ -5,16 +5,16 @@ Library::import('recess.framework.helpers.Html');
 
 class TextInput extends FormInput {
 	function render() {
-		echo '<input type="text" name="', $this->name, '"', ' id="' . $this->name . '"';
-		if($this->class != '') {
-			echo ' class="', $this->class, '"';
-		}
+		echo '<input type="text" name="', $this->name, '"', ' id="', $this->id;
 
-		if($this->value != '') {
-			echo ' value="', Html::specialchars($this->value), '"';
-		}
+		if($this->class != '')
+			echo '" class="', $this->class;
 
-		echo ' />';
+		if($this->value != '')
+			echo '" value="', Html::specialchars($this->value);
+
+		echo '" />';
 	}
 }
+
 ?>

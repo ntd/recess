@@ -1,23 +1,23 @@
 <?php
 Library::import('recess.framework.forms.FormInput');
 class DateTimeInput extends FormInput {
-	
+
 	public $showDate = true;
 	public $showTime = true;
-	
+
 	protected static $months = array('Jan',
-									 'Feb', 
+									 'Feb',
 									 'Mar',
 									 'Apr',
 									 'May',
 									 'June',
-									 'July', 
-									 'Aug', 
-									 'Sept', 
-									 'Oct', 
+									 'July',
+									 'Aug',
+									 'Sept',
+									 'Oct',
 									 'Nov',
 									 'Dec');
-									 
+
 	protected static $meridiems = array(
 									 self::AM,
 									 self::PM
@@ -31,18 +31,18 @@ class DateTimeInput extends FormInput {
 	const AM = 'am';
 	const PM = 'pm';
 	const PM_HOURS = 12;
-	
+
 	function getValue() {
 		return $this->value;
 	}
-	
+
 	function getValueOrZero($array, $key) {
 		if(isset($array[$key]) && $array[$key] != '')
 			return $array[$key];
 		else
 			return 0;
 	}
-	
+
 	function setValue($value) {
 		if(is_array($value)) {
 			$month = $this->getValueOrZero($value, self::MONTH);
@@ -63,50 +63,59 @@ class DateTimeInput extends FormInput {
 			$this->value = strtotime((string) $value);
 		}
 	}
-	
+
 	function render() {
-		
+		// The first rendered element will get the "id" attribute
+		// of the whole group, making it the focusing candidate
+		$this->firstElement = true;
+
 		if($this->showDate) {
 			$this->printMonthInput();
 			$this->printDayInput();
 			$this->printYearInput();
 		}
-		
+
 		if($this->showTime) {
 			$this->printHourInput();
 			$this->printMinuteInput();
 			$this->printmeridiemInput();
 		}
-		
 	}
-	
+
 	function printMonthInput() {
 		$this->printSelect($this->name . '[' . self::MONTH . ']', self::$months, date('n', $this->value));
 	}
-	
+
 	function printDayInput() {
 		$this->printSelect($this->name . '[' . self::DAY . ']', range(1,31), date('j', $this->value));
 	}
-	
+
 	function printYearInput() {
 		$this->printText($this->name . '[' . self::YEAR . ']', date('Y', $this->value));
 	}
-	
+
 	function printHourInput() {
 		$this->printSelect($this->name . '[' . self::HOUR . ']', range(1,12), date('g', $this->value));
 	}
-	
+
 	function printMinuteInput() {
 		$this->printSelect($this->name . '[' . self::MINUTE . ']', range(0,60,15), (int)date('i', $this->value));
 	}
-	
+
 	function printMeridiemInput() {
 		$this->printSelect($this->name . '[' . self::MERIDIEM . ']', self::$meridiems, date('a', $this->value));
 	}
-	
+
 	function printSelect($name, $values, $selected) {
-		echo '<select name="', $name, '">';
-		
+		echo '<select name="', $name;
+
+		if ($this->firstElement) {
+			echo '" id="', $this->id;
+			$this->firstElement = false;
+		}
+
+		echo '">';
+
 		foreach($values as $key => $value) {
 			$key++;
 			echo '<option value="', $key, '"';
@@ -115,12 +124,19 @@ class DateTimeInput extends FormInput {
 			}
 			echo '>', $value, '</option>', "\n";
 		}
-		
+
 		echo '</select>';
 	}
-	
+
 	function printText($name, $value = '') {
-		echo '<input class="text short" name="' . $name . '" value="' . $value . '" />';
+		echo '<input class="text short" name="', $name;
+
+		if ($this->firstElement) {
+			echo '" id="', $this->id;
+			$this->firstElement = false;
+		}
+
+		echo '" value="', $value, '" />';
 	}
 }
 ?>
