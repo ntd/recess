@@ -9,7 +9,7 @@ Buffer::end();
 
 <h1>New <strong>Model</strong> Helper</h1>
 <p>The purpose of this helper is to help speed the process of creating Recess Models. Please note <span class="highlight">this form is <strong>not</strong> child proof</span>!</p>
-<form class="modelForm" method="POST" action="<?php echo $controller->urlTo('generateModel',$app); ?>">
+<form class="modelForm" method="post" action="<?php echo $controller->urlTo('generateModel',$app); ?>">
 <h2>Step 1) Name Your Model</h2>
 <label for="modelName">Model Class Name:</label> <input id="modelName" type="text" name="modelName" />
 <p>The name of your model must be a <span class="highlight">valid PHP class name</span>.</p>

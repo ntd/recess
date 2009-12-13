@@ -1,6 +1,7 @@
 <?php
 Library::import('recess.framework.controllers.Controller');
 Library::import('recess.database.pdo.RecessType');
+Library::import('recess.http.Methods');
 
 /**
  * !RespondsWith Layouts, Json
@@ -176,7 +177,7 @@ class RecessToolsAppsController extends Controller {
 	private function getNewAppForm($fillValues = array()) {
 		Library::import('recess.framework.forms.Form');
 		$form = new Form('');
-		$form->method = "POST";
+		$form->method = Methods::POST;
 		$form->flash = "";
 		$form->action = $this->urlTo('newApp');
 		$form->inputs['appName'] = new TextInput('appName', '', '','');
@@ -188,7 +189,7 @@ class RecessToolsAppsController extends Controller {
 	private function getNewAppStep2Form($fillValues = array()) {
 		Library::import('recess.framework.forms.Form');
 		$form = new Form('');
-		$form->method = "POST";
+		$form->method = Methods::POST;
 		$form->flash = "";
 		$form->action = $this->urlTo('newAppStep2');
 		$form->inputs['appName'] = new HiddenInput('appName', '');

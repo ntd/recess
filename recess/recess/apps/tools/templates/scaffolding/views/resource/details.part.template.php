@@ -1,7 +1,7 @@
 <?php
 Part::input(${{modelNameLower}}, '{{modelName}}');
 ?>
-<form method="POST" action="<?php echo Url::action('{{modelName}}Controller::delete', ${{modelNameLower}}->{{primaryKey}}) ?>">
+<form method="post" action="<?php echo Url::action('{{modelName}}Controller::delete', ${{modelNameLower}}->{{primaryKey}}) ?>">
 	<fieldset>
 	<h3><?php echo Html::anchor(Url::action('{{modelName}}Controller::details', ${{modelNameLower}}->{{primaryKey}}), '{{modelName}} #' . ${{modelNameLower}}->{{primaryKey}}) ?></h3>
 	<p>
