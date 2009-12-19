@@ -35,7 +35,7 @@ class DefaultPolicy implements IPolicy {
 			if($routeResult->methodIsSupported) {
 				$controller = $this->getControllerFromRouteResult($request, $routeResult);
 			} else {
-				throw new RecessResponseException('METHOD not supported, supported METHODs are: ' . implode(',', $routeResult->acceptableMethods), ResponseCodes::HTTP_METHOD_NOT_ALLOWED, get_defined_vars());
+				throw new RecessResponseException('METHOD `' . $request->method . '\' not supported, supported METHODs are: ' . implode(',', $routeResult->acceptableMethods), ResponseCodes::HTTP_METHOD_NOT_ALLOWED, get_defined_vars());
 			}
 		} else {
 			throw new RecessResponseException('Resource does not exist.', ResponseCodes::HTTP_NOT_FOUND, get_defined_vars());
@@ -100,13 +100,21 @@ class DefaultPolicy implements IPolicy {
 	const HTTP_METHOD_FIELD = '_METHOD';
 
 	protected function getHttpMethodFromPost(Request &$request) {
-		if(array_key_exists(self::HTTP_METHOD_FIELD, $request->post)) {
-			$request->method = $request->post[self::HTTP_METHOD_FIELD];
-			unset($request->post[self::HTTP_METHOD_FIELD]);
-			if($request->method == Methods::PUT) {
-				$request->put = $request->post;
-			}
-		}
+		if (!isset($request->post[self::HTTP_METHOD_FIELD]))
+			return $request;
+
+		$method = $request->post[self::HTTP_METHOD_FIELD];
+		unset($request->post[self::HTTP_METHOD_FIELD]);
+
+		if (is_array($method))
+			$method = key($method);
+
+		if (!empty($method))
+			$request->method = $method;
+
+		if (strcasecmp($request->method, Methods::PUT) == 0)
+			$request->put = $request->post;
+
 		return $request;
 	}
 

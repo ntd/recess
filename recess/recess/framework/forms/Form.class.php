@@ -7,6 +7,7 @@ Library::import('recess.framework.forms.LabelInput');
 Library::import('recess.framework.forms.DateLabelInput');
 Library::import('recess.framework.forms.BooleanInput');
 Library::import('recess.framework.forms.HiddenInput');
+Library::import('recess.framework.forms.SubmitInput');
 
 class Form {
 	protected $name;
@@ -41,12 +42,10 @@ class Form {
 	}
 
 	function begin() {
-		if($this->method == Methods::DELETE || $this->method == Methods::PUT) {
-			echo '<form method="post" action="' . $this->action . '">', "\n";
+		echo '<form method="post" action="' . $this->action . '">', "\n";;
+
+		if($this->method == Methods::DELETE || $this->method == Methods::PUT)
 			echo '<div class="hidden"><input type="hidden" name="_METHOD" value="' . $this->method . '" /></div>';
-		} else {
-			echo '<form method="' . strtolower($this->method) . '" action="' . $this->action . '">';
-		}
 	}
 
 	function input($name, $class = '') {
@@ -71,6 +70,24 @@ class Form {
 				$this->inputs[$key]->setValue($keyValues[$key]);
 			}
 		}
+	}
+
+	public function getSubmitInputs() {
+		if (empty($this->method)) {
+			$inputs = array();
+		} elseif (is_array($this->method)) {
+			foreach($this->method as $method => $label) {
+				$input = new SubmitInput('_METHOD[' . $method . ']');
+				$input->setValue($label);
+				$inputs[] = $input; 
+			}
+		} else {
+			$input = new SubmitInput('post');
+			$input->setValue('Submit');
+			$inputs[] = $input; 
+		}
+
+		return $inputs;
 	}
 
 	function assertNotEmpty($inputName) {
