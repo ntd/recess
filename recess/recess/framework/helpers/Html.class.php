@@ -7,7 +7,7 @@ Library::import('recess.framework.helpers.Url');
  * @author Joshua Paine
  * @author Kris Jordan
  * @todo Add protocol parameters back in to anchor and url::..
- * 
+ *
  * Based upon Kohana's HTML helper:
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
@@ -180,12 +180,29 @@ class Html extends AbstractHelper {
 
 		$compiled = '';
 		foreach ($attrs as $key => $val) {
-			$compiled .= ' '.$key.'="'.$val.'"';
+			if (is_numeric($val)) {
+				$val = (string) $val;
+			} elseif (is_bool($val)) {
+				// For booleans, repeat the $key as value if true
+				// otherwise skip this attribute
+				if (!$val)
+					continue;
+				$val = $key;
+			} elseif (is_array($val)) {
+				if (empty($val))
+					continue;
+				$val = HTML::specialchars(implode(' ', $val));
+			} else {
+				if (strlen($val) == 0)
+					continue;
+				$val = HTML::specialchars((string)$val);
+			}
+
+			$compiled .= ' ' . $key . '="' . $val . '"';
 		}
 
 		return $compiled;
 	}
-
 } // End html
 
 function h($var,$encode_entities=true){ return html::specialchars($var,$encode_entities); }

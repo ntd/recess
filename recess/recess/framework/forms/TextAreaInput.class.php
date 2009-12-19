@@ -5,16 +5,13 @@ Library::import('recess.framework.helpers.Html');
 
 class TextAreaInput extends FormInput {
 	function render() {
-		echo '<textarea name="', $this->name, '"', ' id="', $this->id;
-
-		if($this->class != '')
-			echo '" class="', $this->class;
-
-		echo '">';
-
-		if($this->value != '')
-			echo Html::specialchars($this->value);
-
+		$attrs = array(
+			'name' => $this->name,
+			'id' => $this->id,
+			'class' => $this->class
+		);
+		echo '<textarea', Html::attributes($attrs), '>';
+		echo Html::specialchars($this->value);
 		echo '</textarea>';
 	}
 }

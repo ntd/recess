@@ -14,22 +14,23 @@ class ModelSelectInput extends FormInput {
 	}
 
 	function render() {
-		echo '<select name="', $this->name, '" id="', $this->id;
-
-		if($this->class)
-			echo '" class="', $this->class;
-
-		echo '">', "\n", '<option value="">None</option>', "\n";
+		$attrs = array(
+			'name' => $this->name,
+			'id' => $this->id,
+			'class' => $this->class
+		);
+		echo '<select', Html::attributes($attrs), '>', "\n";
+		echo '<option value="">None</option>', "\n";
 
 		foreach($this->options as $opt) {
 			$value = $opt->{$this->optionsId};
 
-			echo '<option value="', $value;
-
-			if($value == $this->value)
-				echo '" selected="selected';
-
-			echo '">', Html::specialchars((string) $opt), '</option>', "\n";
+			$attrs = array(
+				'value' => $value,
+				'selected' => $value == $this->value ? 'selected' : null
+			);
+			echo '<option', Html::attributes($attrs), '>';
+			echo Html::specialchars((string) $opt), '</option>', "\n";
 		}
 
 		echo '</select>';

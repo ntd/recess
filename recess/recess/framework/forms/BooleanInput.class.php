@@ -1,27 +1,28 @@
 <?php
+
 Library::import('recess.framework.forms.FormInput');
+
 class BooleanInput extends FormInput {
 
 	function setValue($value) {
-		if (is_numeric($value)) {
-			$this->value = $value == 1;
-		} else {
-			$this->value = $value;
-		}
-	}
-
-	protected function renderChoice($value, $label, $attributes) {
-		echo '<input type="radio" name="', $this->name, '"', $attributes;
-		echo ' value="', $value, '" />', $label, '</input>', "\n";
+        $this->value = is_numeric($value) ? $value == 1 : $value;
 	}
 
 	function render() {
-		$attributes = ' id="' . $this->id . '"';
-		$attributes .= $this->value ? ' checked="checked"' : '';
-		$this->renderChoice(1, 'Yes', $attributes);
+		$attrs = array(
+			'type' => 'radio',
+			'name' => $this->name,
+			'id' => $this->id,
+			'value' => 1,
+			'checked' => (boolean) $this->value
+		);
+		echo '<input', Html::attributes($attrs), '>Yes</input>', "\n";
 
-		$attributes = $this->value ? '' : ' checked="checked"';
-		$this->renderChoice(0, 'No', $attributes);
+		$attrs['id'] = null;
+		$attrs['value'] = 0;
+		$attrs['checked'] = !$attrs['checked'];
+		echo '<input', Html::attributes($attrs), '>No</input>';
 	}
 }
+
 ?>

@@ -1,5 +1,7 @@
 <?php
+
 Library::import('recess.framework.forms.FormInput');
+
 class DateTimeInput extends FormInput {
 
 	public $showDate = true;
@@ -107,36 +109,39 @@ class DateTimeInput extends FormInput {
 	}
 
 	function printSelect($name, $values, $selected) {
-		echo '<select name="', $name;
+		$attrs['name'] = $name;
 
 		if ($this->firstElement) {
-			echo '" id="', $this->id;
+			$attrs['id'] = $this->id;
 			$this->firstElement = false;
 		}
 
-		echo '">';
+		echo '<select', Html::attributes($attrs), '>', "\n";
 
-		foreach($values as $key => $value) {
-			$key++;
-			echo '<option value="', $key, '"';
-			if($key == $selected) {
-				echo ' selected="selected"';
-			}
-			echo '>', $value, '</option>', "\n";
+		foreach ($values as $key => $value) {
+			$attrs = array(
+				'value' => $key+1,
+				'selected' => $key+1 == $selected ? 'selected' : null
+			);
+			echo '<option', Html::attributes($attrs), '>', $value, '</option>', "\n";
 		}
 
 		echo '</select>';
 	}
 
 	function printText($name, $value = '') {
-		echo '<input class="text short" name="', $name;
+		$attrs['type'] = 'text';
+		$attrs['name'] = $name;
 
 		if ($this->firstElement) {
-			echo '" id="', $this->id;
+			$attrs['id'] = $this->id;
 			$this->firstElement = false;
 		}
 
-		echo '" value="', $value, '" />';
+		$attrs['class'] = array('text', 'short');
+		$attrs['value'] = $value;
+		echo '<input', Html::attributes($attrs), ' />';
 	}
 }
+
 ?>
