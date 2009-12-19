@@ -1,26 +1,29 @@
 <?php
+
 Library::import('recess.framework.forms.Form');
 
 class ModelForm extends Form {
 	protected $model = null;
-	
+
 	function input($name, $class = '') {
 		$this->inputs[$name]->setValue($this->model->$name);
 		parent::input($name, $class);
 	}
-	
-	function changeInput($name, $newInput) {
-		$current = $this->inputs[$name];
-		$newInput .= 'Input';
-		$this->inputs[$name] = new $newInput($this->name . '[' . $name . ']');
-		$this->inputs[$name]->setValue($current->getValue());
+
+	function changeInput($name, $type) {
+		$oldInput = $this->inputs[$name];
+		$type .= 'Input';
+		$newInput = new $type($this->name . '[' . $name . ']');
+		$newInput->setId($oldInput->getId());
+		$newInput->setValue($oldInput->getValue());
+		$this->inputs[$name] = $newInput;
 	}
-	
+
 	function __construct($name, $values, Model $model = null) {
 		$this->name = $name;
 		$this->model = $model;
 
-		if($model != null) {			
+		if($model != null) {
 			if (!is_array($values))
 				$values = array();
 
@@ -39,7 +42,7 @@ class ModelForm extends Form {
 					$input = new HiddenInput($propertyName);
 				} else {
 					switch($property->type) {
-						case RecessType::STRING: 
+						case RecessType::STRING:
 						case RecessType::FLOAT:
 						case RecessType::INTEGER:
 							$input = new TextInput($inputName);
@@ -73,6 +76,8 @@ class ModelForm extends Form {
 							continue;
 					}
 				}
+
+				$input->setId($inputName);
 
 				if(array_key_exists($propertyName, $values)) {
 					$input->setValue($values[$propertyName]);

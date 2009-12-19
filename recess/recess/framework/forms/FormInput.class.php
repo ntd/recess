@@ -1,4 +1,5 @@
 <?php
+
 abstract class FormInput {
 	protected $name;
 	protected $id;
@@ -7,10 +8,6 @@ abstract class FormInput {
 
 	function __construct($name) {
 		$this->name = $name;
-		// The dash (-) is an allowed character and it is seldomly used,
-		// making it a good candidate
-		$tokens = str_word_count($name, 1);
-		$this->id = implode('-', $tokens);
 	}
 
 	function getValue() {
@@ -29,6 +26,16 @@ abstract class FormInput {
 		return $this->id;
 	}
 
+	function setId($id) {
+		// The dash (-) is an allowed character and it is seldomly used,
+		// making it a good candidate invalid id chars, mainly the []
+		// square brackets used in FormInput::$name
+		$tokens = str_word_count($id, 1);
+		$this->id = implode('-', $tokens);
+		return $this->id;
+	}
+
 	abstract function render();
 }
+
 ?>

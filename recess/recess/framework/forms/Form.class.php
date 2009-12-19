@@ -56,11 +56,13 @@ class Form {
 		$this->inputs[$name]->render();
 	}
 
-	function changeInput($name, $newInput) {
-		$current = $this->inputs[$name];
-		$newInput .= 'Input';
-		$this->inputs[$name] = new $newInput($name);
-		$this->inputs[$name]->setValue($current->getValue());
+	function changeInput($name, $type) {
+		$oldInput = $this->inputs[$name];
+		$type .= 'Input';
+		$newInput = new $type($name);
+		$newInput->setId($oldInput->getId());
+		$newInput->setValue($oldInput->getValue());
+		$this->inputs[$name] = $newInput;
 	}
 
 	function fill(array $keyValues) {
