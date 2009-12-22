@@ -39,7 +39,7 @@ class ModelForm extends Form {
 				$input = &$this->inputs[$propertyName];
 
 				if($property->isPrimaryKey) {
-					$input = new HiddenInput($propertyName);
+					$input = new HiddenInput($inputName);
 				} else {
 					switch($property->type) {
 						case RecessType::STRING:
