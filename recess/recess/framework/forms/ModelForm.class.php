@@ -3,7 +3,7 @@
 Library::import('recess.framework.forms.Form');
 
 class ModelForm extends Form {
-	protected $model = null;
+	public $model = null;
 
 	function input($name, $class = '') {
 		$this->inputs[$name]->setValue($this->model->$name);
