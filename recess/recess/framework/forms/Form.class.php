@@ -8,6 +8,7 @@ Library::import('recess.framework.forms.DateLabelInput');
 Library::import('recess.framework.forms.BooleanInput');
 Library::import('recess.framework.forms.HiddenInput');
 Library::import('recess.framework.forms.SubmitInput');
+Library::import('recess.framework.helpers.Html');
 
 class Form {
 	protected $name;
@@ -41,8 +42,10 @@ class Form {
 		$this->action = $action;
 	}
 
-	function begin() {
-		echo '<form method="post" action="' . $this->action . '">', "\n";;
+	function begin($attrs = array()) {
+		isset($attrs['method']) or $attrs['method'] = 'post';
+		isset($attrs['action']) or $attrs['action'] = $this->action;
+		echo '<form', Html::attributes($attrs), '>', "\n";
 
 		if($this->method == Methods::DELETE || $this->method == Methods::PUT)
 			echo '<div class="hidden"><input type="hidden" name="_METHOD" value="' . $this->method . '" /></div>';
