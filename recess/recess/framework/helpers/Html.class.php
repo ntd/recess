@@ -193,9 +193,10 @@ class Html extends AbstractHelper {
 					continue;
 				$val = HTML::specialchars(implode(' ', $val));
 			} else {
+				$val = (string) $val;
 				if (strlen($val) == 0)
 					continue;
-				$val = HTML::specialchars((string)$val);
+				$val = HTML::specialchars($val);
 			}
 
 			$compiled .= ' ' . $key . '="' . $val . '"';
